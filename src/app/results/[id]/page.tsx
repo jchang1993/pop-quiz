@@ -5,7 +5,8 @@ import { redirect } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Link from "next/link"
 
-export default async function ResultsPage({ params }: { params: { id: string } }) {
+export default async function ResultsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
@@ -14,7 +15,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
 
   const quiz = await prisma.quiz.findUnique({
     where: {
-      id: params.id,
+      id: id,
     },
     include: {
       questions: {

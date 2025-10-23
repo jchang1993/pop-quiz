@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Navbar from "@/components/Navbar"
@@ -20,7 +20,8 @@ type ToastState = {
   type: "success" | "error" | "info"
 }
 
-export default function EditQuizPage({ params }: { params: { id: string } }) {
+export default function EditQuizPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [title, setTitle] = useState("")
@@ -41,7 +42,7 @@ export default function EditQuizPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function loadQuiz() {
       try {
-        const res = await fetch(`/api/quiz/${params.id}`)
+        const res = await fetch(`/api/quiz/${id}`)
         const data = await res.json()
 
         if (!res.ok) {
@@ -75,7 +76,7 @@ export default function EditQuizPage({ params }: { params: { id: string } }) {
     if (session) {
       loadQuiz()
     }
-  }, [params.id, session])
+  }, [id, session])
 
   const addQuestion = () => {
     setQuestions([
@@ -181,7 +182,7 @@ export default function EditQuizPage({ params }: { params: { id: string } }) {
     }
 
     try {
-      const res = await fetch(`/api/quiz/${params.id}`, {
+      const res = await fetch(`/api/quiz/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

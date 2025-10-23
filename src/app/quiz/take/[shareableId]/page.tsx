@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
@@ -22,7 +22,8 @@ type Quiz = {
   questions: Question[]
 }
 
-export default function TakeQuizPage({ params }: { params: { shareableId: string } }) {
+export default function TakeQuizPage({ params }: { params: Promise<{ shareableId: string }> }) {
+  const { shareableId } = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [quiz, setQuiz] = useState<Quiz | null>(null)
@@ -35,7 +36,7 @@ export default function TakeQuizPage({ params }: { params: { shareableId: string
   useEffect(() => {
     async function fetchQuiz() {
       try {
-        const res = await fetch(`/api/quiz/take/${params.shareableId}`)
+        const res = await fetch(`/api/quiz/take/${shareableId}`)
         const data = await res.json()
 
         if (!res.ok) {
@@ -54,13 +55,13 @@ export default function TakeQuizPage({ params }: { params: { shareableId: string
     }
 
     fetchQuiz()
-  }, [params.shareableId])
+  }, [shareableId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!session?.user) {
-      router.push(`/login?callbackUrl=/quiz/take/${params.shareableId}`)
+      router.push(`/login?callbackUrl=/quiz/take/${shareableId}`)
       return
     }
 
@@ -73,7 +74,7 @@ export default function TakeQuizPage({ params }: { params: { shareableId: string
     setError("")
 
     try {
-      const res = await fetch(`/api/quiz/take/${params.shareableId}/submit`, {
+      const res = await fetch(`/api/quiz/take/${shareableId}/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +90,7 @@ export default function TakeQuizPage({ params }: { params: { shareableId: string
         return
       }
 
-      router.push(`/quiz/take/${params.shareableId}/results`)
+      router.push(`/quiz/take/${shareableId}/results`)
     } catch (error) {
       setError("An error occurred. Please try again.")
       setSubmitting(false)
@@ -157,7 +158,7 @@ export default function TakeQuizPage({ params }: { params: { shareableId: string
               You need to be signed in to take this quiz
             </p>
             <Link
-              href={`/login?callbackUrl=/quiz/take/${params.shareableId}`}
+              href={`/login?callbackUrl=/quiz/take/${shareableId}`}
               className="inline-block bg-blue-600 text-white hover:bg-blue-700 px-6 py-2 rounded-md text-sm font-medium"
             >
               Sign In

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
@@ -34,7 +34,8 @@ type QuizResult = {
   total: number
 }
 
-export default function QuizResultsPage({ params }: { params: { shareableId: string } }) {
+export default function QuizResultsPage({ params }: { params: Promise<{ shareableId: string }> }) {
+  const { shareableId } = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [results, setResults] = useState<QuizResult | null>(null)
@@ -44,7 +45,7 @@ export default function QuizResultsPage({ params }: { params: { shareableId: str
   useEffect(() => {
     async function fetchResults() {
       try {
-        const res = await fetch(`/api/quiz/take/${params.shareableId}/results`)
+        const res = await fetch(`/api/quiz/take/${shareableId}/results`)
         const data = await res.json()
 
         if (!res.ok) {
@@ -64,9 +65,9 @@ export default function QuizResultsPage({ params }: { params: { shareableId: str
     if (session) {
       fetchResults()
     } else if (!session) {
-      router.push(`/login?callbackUrl=/quiz/take/${params.shareableId}/results`)
+      router.push(`/login?callbackUrl=/quiz/take/${shareableId}/results`)
     }
-  }, [params.shareableId, session, router])
+  }, [shareableId, session, router])
 
   if (loading) {
     return (
