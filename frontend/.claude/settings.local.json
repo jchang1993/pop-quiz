@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npx prisma migrate dev --name add_password_field)",
+      "Bash(node delete-user.js \"\")",
+      "Bash(node clear-users.js)",
+      "Bash(npx prisma migrate deploy)",
+      "Bash(npx prisma migrate dev --name add_question_images)",
+      "Bash(npx prisma migrate dev --name add_published_field)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Read(//c/Users/jchang.MHBCON/pop-quiz/**)",
+      "Bash(dir /b)",
+      "Bash(findstr:*)",
+      "Bash(npm install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
