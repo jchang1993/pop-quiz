@@ -5,9 +5,10 @@ import { prisma } from "@/lib/prisma"
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -15,7 +16,7 @@ export async function POST(
     }
 
     const quiz = await prisma.quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { questions: true },
     })
 
@@ -45,7 +46,7 @@ export async function POST(
     }
 
     const updatedQuiz = await prisma.quiz.update({
-      where: { id: params.id },
+      where: { id },
       data: { published: true },
     })
 

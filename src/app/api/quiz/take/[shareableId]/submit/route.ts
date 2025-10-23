@@ -6,9 +6,10 @@ import { validateRequestSize, validateAnswerPayload } from "@/lib/validation"
 
 export async function POST(
   req: Request,
-  { params }: { params: { shareableId: string } }
+  { params }: { params: Promise<{ shareableId: string }> }
 ) {
   try {
+    const { shareableId } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -23,7 +24,7 @@ export async function POST(
 
     const quiz = await prisma.quiz.findUnique({
       where: {
-        shareableId: params.shareableId,
+        shareableId,
       },
       include: {
         questions: true,

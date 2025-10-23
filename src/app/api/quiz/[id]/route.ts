@@ -6,9 +6,10 @@ import { validateRequestSize, validateQuizPayload } from "@/lib/validation"
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -16,7 +17,7 @@ export async function GET(
     }
 
     const quiz = await prisma.quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         questions: {
           orderBy: { order: "asc" },
@@ -54,9 +55,10 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -74,7 +76,7 @@ export async function PUT(
     if (validationError) return validationError
 
     const existingQuiz = await prisma.quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!existingQuiz) {
@@ -87,12 +89,12 @@ export async function PUT(
 
     // Delete existing questions
     await prisma.question.deleteMany({
-      where: { quizId: params.id },
+      where: { quizId: id },
     })
 
     // Update quiz with new questions
     const updatedQuiz = await prisma.quiz.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         description,
@@ -125,9 +127,10 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -135,7 +138,7 @@ export async function DELETE(
     }
 
     const existingQuiz = await prisma.quiz.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!existingQuiz) {
@@ -148,7 +151,7 @@ export async function DELETE(
 
     // Delete quiz (this will cascade delete questions and answers due to onDelete: Cascade in schema)
     await prisma.quiz.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })

@@ -5,14 +5,15 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
   req: Request,
-  { params }: { params: { shareableId: string } }
+  { params }: { params: Promise<{ shareableId: string }> }
 ) {
   try {
+    const { shareableId } = await params
     const session = await getServerSession(authOptions)
 
     const quiz = await prisma.quiz.findFirst({
       where: {
-        shareableId: params.shareableId,
+        shareableId,
         published: true,
       },
       select: {
