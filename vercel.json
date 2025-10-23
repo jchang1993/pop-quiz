@@ -4,10 +4,10 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "env": {
-    "DATABASE_URL": "@database_url",
-    "DIRECT_URL": "@direct_url",
-    "NEXTAUTH_SECRET": "@nextauth_secret",
-    "NEXTAUTH_URL": "@nextauth_url"
+    "DATABASE_URL": "postgresql://neondb_owner:npg_cRF2Mv6fWoIV@ep-fancy-sunset-ab8ueh9f-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+    "DIRECT_URL": "postgresql://neondb_owner:npg_cRF2Mv6fWoIV@ep-fancy-sunset-ab8ueh9f.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+    "NEXTAUTH_SECRET": "fd017b99864f2903988a70fcfd1d94d7",
+    "NEXTAUTH_URL": "https://pop-quiz.vercel.app"
   },
   "functions": {
     "api/**/*.ts": {
