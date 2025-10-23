@@ -186,7 +186,7 @@ export default function DashboardPage() {
         ) : (
           <div className="mb-4 min-h-[72px] flex flex-col justify-center">
             <div className="flex items-center text-sm text-gray-500 space-x-4">
-              <span>{quiz.questions.length} questions</span>
+              <span>{quiz._count?.questions || 0} questions</span>
               {quiz._count && <span>{quiz._count.answers} respondent{quiz._count.answers !== 1 ? 's' : ''}</span>}
             </div>
           </div>

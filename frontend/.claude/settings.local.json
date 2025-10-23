@@ -14,7 +14,8 @@
       "Bash(dir /b)",
       "Bash(findstr:*)",
       "Bash(npm install:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
