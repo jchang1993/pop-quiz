@@ -14,9 +14,10 @@ type Quiz = {
   published: boolean
   createdAt: string
   shareableId: string
-  questions: any[]
+  questions?: any[]
   _count?: {
     answers: number
+    questions?: number
   }
   userScore?: number
   totalQuestions?: number
